@@ -6,6 +6,7 @@
 
 /**
  * MapSystem by Malaxiz
+ * https://github.com/Malaxiz/MapSystem
  *
  * This game uses maps to increase performance.
  *
