@@ -1,6 +1,6 @@
 MapSystem
 =========
-/**
+
  * MapSystem by Malaxiz
  * https://github.com/Malaxiz/MapSystem
  *
@@ -11,4 +11,3 @@ MapSystem
  * TODO:
  * > Add entities, player and enemies (static entities(trees)?)
  * > Add physics.
- */
