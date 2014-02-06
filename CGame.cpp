@@ -1,7 +1,8 @@
 #include "CGame.h"
-#include "CDefine.h"
-#include <iostream>
+#include <SDL_ttf.h>
 #include <sstream>
+#include <iostream>
+#include "CDefine.h"
 #include "CSurface.h"
 
 /**
@@ -37,7 +38,7 @@ int CGame::OnExecute()
 
     SDL_Event Event;
 
-    std::cout << "Entering gameloop\n";
+    std::stringstream FpsDebug;
 
     while(Running)
     {
@@ -61,16 +62,17 @@ int CGame::OnExecute()
 
         if(Timer - SDL_GetTicks() > 1000)
         {
+            FpsDebug.str("");
+            FpsDebug << "Ups: " << Updates << ", Fps: " << Frames;
+
             Timer += 1000;
-            std::stringstream Title;
-            Title << "MapSystem | " << Updates << " ups, " << Frames << " frames";
-            SDL_WM_SetCaption(Title.str().c_str(), nullptr);
             Updates = 0;
             Frames = 0;
         }
-    }
 
-    std::cout << "Exiting gameloop\n";
+        ResourceManager.CreateTextBuffer(0, 32, FpsDebug.str().c_str(), Surf_Display,
+                                 ResourceManager.FontMap["TestFont"], {0xFF, 0xFF, 0xFF});
+    }
 
     OnCleanup();
 
@@ -85,12 +87,19 @@ int CGame::OnInit()
         return -1;
     }
 
+    if(TTF_Init() == -1)
+    {
+        std::cerr << "error: TTF_Init failed: " << SDL_GetError() << ".\n";
+    }
+
     if((Surf_Display = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF)) == nullptr)
     {
         std::cerr << "error: SDL_SetVideoMode failed: " << SDL_GetError() << ".\n";
         OnCleanup();
         return -2;
     }
+
+    SDL_WM_SetCaption("MapSystem by Malaxiz", nullptr);
 
     if(ResourceManager.LoadSpriteSheets() == false)
     {
@@ -116,6 +125,8 @@ int CGame::OnInit()
 
 void CGame::OnCleanup()
 {
+    TTF_Quit();
+
     SDL_Quit();
 }
 
@@ -131,8 +142,17 @@ void CGame::OnRender()
 
     Area->OnRender(Surf_Display, Camera.GetX(), Camera.GetY());
 
+    // Puts together a text that displays the camera's coordinates
+    std::stringstream Text;
+    Text << "CameraX: " << Camera.GetX() << ", CameraY: " << Camera.GetY();
+    ResourceManager.CreateTextBuffer(0, 16, Text.str().c_str(), Surf_Display,
+                         ResourceManager.FontMap["TestFont"], {0xFF,0xFF,0xFF});
+
+    // Temp
     ResourceManager.GetSprite("Apple")->OnRender(100, 100, Surf_Display);
     ResourceManager.GetSprite("Helm")->OnRender(116, 100, Surf_Display);
+
+    ResourceManager.RenderTextBuffers();
 
     SDL_Flip(Surf_Display);
 }

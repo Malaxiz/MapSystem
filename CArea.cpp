@@ -2,6 +2,7 @@
 #include "CResourceManager.h"
 #include "CDefine.h"
 #include "CSurface.h"
+#include <sstream>
 
 #include <iostream>
 
@@ -61,9 +62,15 @@ void CArea::OnRender(SDL_Surface* Surf_Destination, int CameraX, int CameraY)
     int FirstID = CameraX / MapWidth;
         FirstID = FirstID + ((CameraY / MapHeight) * AreaSize);
 
+    // Temp
+    std::stringstream Text;
+    Text << "MapID's loaded: ";
+
     for(int i = 0; i < 4; i++)
     {
         int ID = FirstID + ((i / 2) * AreaSize) + (i % 2);
+
+        Text << ID << ", ";
 
         if(ID < 0 || ID >= MapList.size())
             continue;
@@ -79,6 +86,10 @@ void CArea::OnRender(SDL_Surface* Surf_Destination, int CameraX, int CameraY)
 
         MapList[ID].OnRender(Surf_Destination, X, Y, CameraX, CameraY);
     }
+
+    // Temp
+    ResourceManager->CreateTextBuffer(0, 0, Text.str().c_str(), Surf_Destination,
+                         ResourceManager->FontMap["TestFont"], {0xFF, 0xFF, 0xFF});
 }
 
 // The unoptimized

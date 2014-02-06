@@ -9,4 +9,6 @@
 #define MAP_WIDTH 40
 #define MAP_HEIGHT 40
 
+#define DEFAULT_TEXT_SIZE 12
+
 #endif // CDEFINE_H_INCLUDED
