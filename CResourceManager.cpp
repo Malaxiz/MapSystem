@@ -3,7 +3,7 @@
 #include <iostream>
 #include "CDefine.h"
 
-CResourceManager::CResourceManager() : CurrentID(0)
+CResourceManager::CResourceManager()
 {
     // Default spriteSheets
     SpriteSheetMap["Default"] = std::make_shared<CSpriteSheet>("./resources/gfx/default.png");
@@ -11,17 +11,21 @@ CResourceManager::CResourceManager() : CurrentID(0)
 
     //==
 
-    CreateSprite("Null", 15 * 16, 15 * 16, 16, 16, SpriteSheetMap.at("Default"));
+    CreateSprite("DefaultSprite", "Null", 15 * 16, 15 * 16, 16, 16, SpriteSheetMap.at("Default"));
 
     //==
 
-    // Default sprites, maybe separate sprites and tiles...
+    // Default ItemSprites
 
-    CreateSprite("Cobblestone", 0 * 16, 1 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
-    CreateSprite("Dirt", 2 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
-    CreateSprite("Tree", 5 * 16, 3 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
-    CreateSprite("Helm", 0 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Default"));
-    CreateSprite("Apple", 10 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Default"));
+    CreateSprite("ItemSprite", "Helm", 0 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Default"));
+    CreateSprite("ItemSprite", "Apple", 10 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Default"));
+
+    // Default TileSprites
+
+    CreateSprite("TileSprite", "Dirt", 2 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
+    CreateSprite("TileSprite", "Cobblestone", 0 * 16, 1 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
+    CreateSprite("TileSprite", "Tree", 5 * 16, 3 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
+
 }
 
 CResourceManager::~CResourceManager()
@@ -57,22 +61,27 @@ bool CResourceManager::LoadSpriteSheets()
 
     FontMap["TestFont"] = TTF_OpenFont("./resources/fonts/Minecraftia.ttf", DEFAULT_TEXT_SIZE);
 
-    if(FontMap["TestFont"] == nullptr)
+    for(auto it = FontMap.begin();
+        it != FontMap.end();
+        it++)
     {
-        std::cerr << "error: Could not find game font (./resources/fonts/)\n";
+        if(it->second == nullptr)
+        {
+            std::cerr << "error: Could not find game font (./resources/fonts/)\n";
+        }
     }
 
     return true;
 }
 
 // I don't think doing this will allow me to remove sprites.
-void CResourceManager::CreateSprite(std::string Name, int x, int y, int w, int h,
+void CResourceManager::CreateSprite(std::string SpriteType, std::string Name, int x, int y, int w, int h,
                                     std::shared_ptr<CSpriteSheet> SpriteSheet)
 {
-    SpriteMap[Name] = std::make_shared<CSprite>(x, y, w, h, SpriteSheet);
-    SpriteMapByID[CurrentID] = SpriteMap[Name];
+    SpriteMap[SpriteType][Name] = std::make_shared<CSprite>(x, y, w, h, SpriteSheet);
+    SpriteMapByID[SpriteType][CurrentID[SpriteType]] = SpriteMap[SpriteType][Name];
 
-    CurrentID++;
+    CurrentID[SpriteType]++;
 }
 
 void CResourceManager::CreateTextBuffer(int x, int y, const char* Text, SDL_Surface* Surf_Destination,
@@ -105,35 +114,24 @@ void CResourceManager::RenderTextBuffers()
     TextBufferVector.clear();
 }
 
-std::shared_ptr<CSprite> CResourceManager::GetSprite(std::string Key)
+std::shared_ptr<CSprite> CResourceManager::GetSprite(std::string SpriteType, std::string Key)
 {
-    if(SpriteMap.find(Key) == SpriteMap.end())
-        return SpriteMap.at("Null");
+    if(SpriteMap.find(SpriteType) == SpriteMap.end())
+        return SpriteMap.at("DefaultSprite").at("Null");
     else
-        return SpriteMap.at(Key);
+        if(SpriteMap.at(SpriteType).find(Key) == SpriteMap.at(SpriteType).end())
+            return SpriteMap.at("DefaultSprite").at("Null");
+        else
+            return SpriteMap.at(SpriteType).at(Key);
 }
 
-std::shared_ptr<CSprite> CResourceManager::GetSprite(int ID)
+std::shared_ptr<CSprite> CResourceManager::GetSprite(std::string SpriteType, int ID)
 {
-    if(SpriteMapByID.find(ID) == SpriteMapByID.end())
-        return SpriteMapByID.at(0); // 0 is "Null"
+    if(SpriteMapByID.find(SpriteType) == SpriteMapByID.end())
+        return SpriteMap.at("DefaultSprite").at("Null");
     else
-        return SpriteMapByID.at(ID);
+        if(SpriteMapByID.at(SpriteType).find(ID) == SpriteMapByID.at(SpriteType).end())
+            return SpriteMap.at("DefaultSprite").at("Null");
+        else
+            return SpriteMapByID.at(SpriteType).at(ID);
 }
-
-//std::shared_ptr<CSprite> CResourceManager::GetSprite(int ID)
-//{
-//    // Gets sprite by ID
-//    // Doesn't work, maps are sorted by alphabetical order...
-//
-//    auto it = SpriteMap.begin();
-//
-//    int i = 0;
-//    while(i != ID)
-//    {
-//        it++;
-//        i++;
-//    }
-//
-//    return it->second;
-//}

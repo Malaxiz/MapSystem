@@ -20,6 +20,7 @@
 
 
 CGame::CGame() :
+    GameVersion("MapSystem v.1"),
     Running(true),
     LastTime(SDL_GetTicks()), Timer(SDL_GetTicks()),
     Updates(0), Frames(0),
@@ -70,7 +71,8 @@ int CGame::OnExecute()
             Frames = 0;
         }
 
-        ResourceManager.CreateTextBuffer(0, 32, FpsDebug.str().c_str(), Surf_Display,
+        // Text buffer call
+        ResourceManager.CreateTextBuffer(4, 32, FpsDebug.str().c_str(), Surf_Display,
                                  ResourceManager.FontMap["TestFont"], {0xFF, 0xFF, 0xFF});
     }
 
@@ -145,12 +147,20 @@ void CGame::OnRender()
     // Puts together a text that displays the camera's coordinates
     std::stringstream Text;
     Text << "CameraX: " << Camera.GetX() << ", CameraY: " << Camera.GetY();
-    ResourceManager.CreateTextBuffer(0, 16, Text.str().c_str(), Surf_Display,
+    // Text buffer call
+    ResourceManager.CreateTextBuffer(4, 16, Text.str().c_str(), Surf_Display,
                          ResourceManager.FontMap["TestFont"], {0xFF,0xFF,0xFF});
 
+    // Renders the version name to the text buffer
+    int vWidth, vHeight;
+    TTF_SizeText(ResourceManager.FontMap["TestFont"], GameVersion.c_str(), &vWidth, &vHeight);
+    // Text buffer call
+    ResourceManager.CreateTextBuffer(WIDTH - vWidth - 4, 0, GameVersion.c_str(), Surf_Display,
+                                     ResourceManager.FontMap["TestFont"], {0xFF,0xFF,0xFF});
+
     // Temp
-    ResourceManager.GetSprite("Apple")->OnRender(100, 100, Surf_Display);
-    ResourceManager.GetSprite("Helm")->OnRender(116, 100, Surf_Display);
+    ResourceManager.GetSprite("ItemSprite", "Apple")->OnRender(120, 100, Surf_Display);
+    ResourceManager.GetSprite("ItemSprite", "Helm")->OnRender(480, 100, Surf_Display);
 
     ResourceManager.RenderTextBuffers();
 

@@ -54,7 +54,7 @@ void CMap::OnRender(SDL_Surface* Surf_Destination, int MapX, int MapY, int Camer
 
             // Check if tile is inside camera, otherwise, don't bother rendering. 50% fps boost!
             if(CSurface::Collision(tX + CameraX, tY + CameraY, TILE_SIZE, TILE_SIZE, CameraX, CameraY, WIDTH, HEIGHT))
-                ResourceManager->GetSprite(TileList[ID].TileID)->OnRender(tX, tY, Surf_Destination);
+                ResourceManager->GetSprite("TileSprite", TileList[ID].TileID)->OnRender(tX, tY, Surf_Destination);
 
             ID++;
         }

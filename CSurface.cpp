@@ -65,20 +65,34 @@ void CSurface::RenderText(int x, int y, const char* Text, SDL_Surface* Surf_Dest
 
 bool CSurface::Collision(int x, int y, int w, int h, int x2, int y2, int w2, int h2)
 {
-//    x += 16;
-//    y += 16;
+    int LeftA, LeftB;
+    int RightA, RightB;
+    int TopA, TopB;
+    int BottomA, BottomB;
 
-    // Left is larger Right2
-    if(x > x2 + w2)
+    LeftA = x;
+    RightA = x + w;
+    TopA = y;
+    BottomA = y + w;
+
+    LeftB = x2;
+    RightB = x2 + w2;
+    TopB = y2;
+    BottomB = y2 + w2;
+
+    // Uncomment to see how dirty rects work
+//    LeftB = x2 + 32;
+//    RightB = x2 + w2 - 32;
+//    TopB = y2 + 32;
+//    BottomB = y2 + w2 - 32;
+
+    if(LeftA >= RightB)
         return false;
-    // Right is less than Left2
-    if(x + w < x2)
+    if(RightA <= LeftB)
         return false;
-    // Top is larger than Bottom2
-    if(y > y2 + h2)
+    if(TopA >= BottomB)
         return false;
-    // Bottom is less than Top2
-    if(y + h < y2)
+    if(BottomA <= TopB)
         return false;
 
     // Collision

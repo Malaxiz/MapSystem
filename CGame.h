@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <memory>
+#include <string>
 #include "CResourceManager.h"
 #include "CArea.h"
 #include "CCamera.h"
@@ -10,6 +11,8 @@
 class CGame
 {
 public:
+    std::string GameVersion;
+
     CGame();
     virtual ~CGame();
 

@@ -72,7 +72,7 @@ void CArea::OnRender(SDL_Surface* Surf_Destination, int CameraX, int CameraY)
 
         Text << ID << ", ";
 
-        if(ID < 0 || ID >= MapList.size())
+        if(ID < 0 || (Uint16)ID >= MapList.size())
             continue;
 
         // Check if map is inside camera, otherwise, don't bother rendering. 20% - 40% fps boost!
@@ -87,8 +87,8 @@ void CArea::OnRender(SDL_Surface* Surf_Destination, int CameraX, int CameraY)
         MapList[ID].OnRender(Surf_Destination, X, Y, CameraX, CameraY);
     }
 
-    // Temp
-    ResourceManager->CreateTextBuffer(0, 0, Text.str().c_str(), Surf_Destination,
+    // Text buffer call
+    ResourceManager->CreateTextBuffer(4, 0, Text.str().c_str(), Surf_Destination,
                          ResourceManager->FontMap["TestFont"], {0xFF, 0xFF, 0xFF});
 }
 
