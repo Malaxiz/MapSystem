@@ -11,9 +11,9 @@ CResourceManager::CResourceManager()
 
     //==
 
-    CreateSprite("DefaultSprite", "Null", 15 * 16, 15 * 16, 16, 16, SpriteSheetMap.at("Default"));
+    // Default DefaultSprites
 
-    //==
+    CreateSprite("DefaultSprite", "Null", 15 * 16, 15 * 16, 16, 16, SpriteSheetMap.at("Default"));
 
     // Default ItemSprites
 
@@ -25,6 +25,34 @@ CResourceManager::CResourceManager()
     CreateSprite("TileSprite", "Dirt", 2 * 16, 0 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
     CreateSprite("TileSprite", "Cobblestone", 0 * 16, 1 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
     CreateSprite("TileSprite", "Tree", 5 * 16, 3 * 16, 16, 16, SpriteSheetMap.at("Tileset"));
+
+    // In the future the animation offsets will be loaded from files
+    std::vector<SDL_Rect> Offsets;
+
+    // Wheat looping
+    for(int x = 8; x <= 14; x++)
+        Offsets.push_back({x * 16, 5 * 16, 16, 16});
+
+    AnimationMap["TestAnimation"]["Wheat"] = std::make_shared<CAnimation>(SpriteSheetMap.at("Tileset"), Offsets);
+
+    Offsets.clear();
+
+    // Wool looping
+    for(int x = 0; x <= 15; x++)
+        Offsets.push_back({x * 16, 4 * 16, 16, 16});
+
+    AnimationMap["TestAnimation"]["Wool"] = std::make_shared<CAnimation>(SpriteSheetMap.at("Tileset"), Offsets);
+
+    Offsets.clear();
+
+    // All tiles
+    for(int y = 0; y < 16; y++)
+        for(int x = 0; x < 16; x++)
+            Offsets.push_back({16 * x, 16 * y, 16, 16});
+
+    AnimationMap["TestAnimation"]["All"] = std::make_shared<CAnimation>(SpriteSheetMap.at("Tileset"), Offsets);
+
+    Offsets.clear();
 
 }
 
@@ -89,7 +117,7 @@ void CResourceManager::CreateTextBuffer(int x, int y, const char* Text, SDL_Surf
 {
     std::string TempText(Text);
 
-    TextBuffer Buffer(x, y, TempText, Surf_Destination, Font, Color);
+    CTextBuffer Buffer(x, y, TempText, Surf_Destination, Font, Color);
 
     TextBufferVector.push_back(Buffer);
 }

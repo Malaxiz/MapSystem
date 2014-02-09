@@ -8,7 +8,9 @@
 #include <string>
 #include "CSprite.h"
 #include "CSpriteSheet.h"
-#include "TextBuffer.h"
+#include "CTextBuffer.h"
+
+#include "CAnimation.h"
 
 class CResourceManager
 {
@@ -28,9 +30,10 @@ public:
 //    int CurrentDebugTextID;
     std::map<std::string, std::map<std::string, std::shared_ptr<CSprite>>> SpriteMap;
     std::map<std::string, std::map<int, std::shared_ptr<CSprite>>> SpriteMapByID;
+    std::map<std::string, std::map<std::string, std::shared_ptr<CAnimation>>> AnimationMap;
     std::map<std::string, std::shared_ptr<CSpriteSheet>> SpriteSheetMap;
     std::map<std::string, TTF_Font*> FontMap;
-    std::vector<TextBuffer> TextBufferVector;
+    std::vector<CTextBuffer> TextBufferVector;
 
 };
 

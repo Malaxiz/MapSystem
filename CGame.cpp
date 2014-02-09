@@ -5,6 +5,8 @@
 #include "CDefine.h"
 #include "CSurface.h"
 
+#include "CAnimation.h"
+
 /**
  * MapSystem by Malaxiz
  * https://github.com/Malaxiz/MapSystem
@@ -20,7 +22,7 @@
 
 
 CGame::CGame() :
-    GameVersion("MapSystem v.1"),
+    GameVersion("MapSystem v.1.1"),
     Running(true),
     LastTime(SDL_GetTicks()), Timer(SDL_GetTicks()),
     Updates(0), Frames(0),
@@ -127,13 +129,22 @@ int CGame::OnInit()
 
 void CGame::OnCleanup()
 {
-    TTF_Quit();
-
     SDL_Quit();
+
+    TTF_Quit();
 }
 
 void CGame::OnLoop()
 {
+    // Just a test
+//    void test(int i, std::initializer_list<SDL_Rect> Offsets);
+//
+//    test(1, {
+//            {0, 0, 16, 16},
+//            {16, 16, 16, 16},
+//            {24, 24, 16, 16},
+//            {32, 32, 16, 16}
+//         });
 }
 
 void CGame::OnRender()
@@ -161,6 +172,10 @@ void CGame::OnRender()
     // Temp
     ResourceManager.GetSprite("ItemSprite", "Apple")->OnRender(120, 100, Surf_Display);
     ResourceManager.GetSprite("ItemSprite", "Helm")->OnRender(480, 100, Surf_Display);
+
+    ResourceManager.AnimationMap["TestAnimation"]["Wheat"]->OnRender(150, 150, Surf_Display);
+    ResourceManager.AnimationMap["TestAnimation"]["Wool"]->OnRender(150, 200, Surf_Display);
+    ResourceManager.AnimationMap["TestAnimation"]["All"]->OnRender(150, 250, Surf_Display);
 
     ResourceManager.RenderTextBuffers();
 
